@@ -1,0 +1,7 @@
+---
+- name: Set XML Path
+  ansible.builtin.set_fact:
+    xpath: "/opnsense/dhcpd/{{ item.iface }}"
+
+- name: Import the appropriate tasks
+  ansible.builtin.import_tasks: "{{ 'enable-and-configure' if item.enabled else 'disable' }}.yml"
