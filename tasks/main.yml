@@ -8,5 +8,5 @@
 - name: Import DHCP tasks
   delegate_to: localhost
   notify: Upload config
-  ansible.builtin.include_tasks: dhcp/main.yml
+  ansible.builtin.include_tasks: config.yml
   with_items: "{{ opnsense_dhcp }}"
