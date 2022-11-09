@@ -30,7 +30,7 @@ Example Playbook
 
 ```yaml
 - name: Configure the DHCP server
-  hosts: all
+  hosts: opnsense
 
   roles:
     - role: mirceanton.opnsense_dhcp
