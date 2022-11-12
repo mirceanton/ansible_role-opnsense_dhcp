@@ -1,7 +1,41 @@
 ---
-- name: Set XML Path
-  ansible.builtin.set_fact:
-    xpath: "/opnsense/dhcpd/{{ item.iface }}"
+- name: "[{{ item.iface | upper }}] Disable"
+  delegate_to: localhost
+  community.general.xml:
+    pretty_print: true
+    path: "{{ local_file }}"
+    xpath: "{{ xpath }}/{{ item.iface }}"
+    state: absent
+  when: ( item.enabled | default(true) ) == false
 
-- name: Import the appropriate tasks
-  ansible.builtin.import_tasks: "{{ 'enable-and-configure' if item.enabled else 'disable' }}.yml"
+- name: Enable and Configure DHCP
+  delegate_to: localhost
+  when: ( item.enabled | default(true) ) == true
+  block:
+    - name: "[{{ item.iface | upper }}] Enable"
+      community.general.xml:
+        pretty_print: true
+        path: "{{ local_file }}"
+        xpath: "{{ xpath }}/{{ item.iface }}/enable"
+        state: present
+
+    - name: "[{{ item.iface | upper }}] Set Range Start"
+      community.general.xml:
+        pretty_print: true
+        path: "{{ local_file }}"
+        xpath: "{{ xpath }}/{{ item.iface }}/range/from"
+        value: "{{ item.range.start }}"
+
+    - name: "[{{ item.iface | upper }}] Set Range End"
+      community.general.xml:
+        pretty_print: true
+        path: "{{ local_file }}"
+        xpath: "{{ xpath }}/{{ item.iface }}/range/to"
+        value: "{{ item.range.end }}"
+
+    - name: "[{{ item.iface | upper }}] Set DNS server"
+      community.general.xml:
+        pretty_print: true
+        path: "{{ local_file }}"
+        xpath: "{{ xpath }}/{{ item.iface }}/dnsserver"
+        value: "{{ item.dns }}"

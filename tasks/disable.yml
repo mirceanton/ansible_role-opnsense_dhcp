@@ -1,7 +1,0 @@
----
-- name: "[{{ item.iface | upper }}] Disable"
-  community.general.xml:
-    pretty_print: true
-    path: "{{ local_file }}"
-    xpath: "{{ xpath }}"
-    state: absent
