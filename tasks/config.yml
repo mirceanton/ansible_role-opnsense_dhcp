@@ -6,11 +6,11 @@
     path: "{{ local_file }}"
     xpath: "{{ xpath }}/{{ item.iface }}"
     state: absent
-  when: ( item.enabled | default(true) ) == false
+  when: ( item.enabled | default(true) ) is False
 
 - name: Enable and Configure DHCP
   delegate_to: localhost
-  when: ( item.enabled | default(true) ) == true
+  when: ( item.enabled | default(true) ) is True
   block:
     - name: "[{{ item.iface | upper }}] Enable"
       community.general.xml:
